@@ -1,19 +1,44 @@
 <?php
 
+/** @var Illuminate\Support\Facades\Route $router */
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+$router->post('login', 'AuthController@login');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+$router->group(['middleware' => 'jwt-auth'], function () use ($router) {
+    
+    // auth routes
+    $router->post('logout', 'AuthController@logout');
+    $router->post('me', 'AuthController@me');
+    $router->post('refresh', 'AuthController@refresh');
+    
+    // user routes
+    $router->get('users', 'UserController@index');
+    $router->get('users/{id}', 'UserController@show');
+    $router->post('users', function(Request $request) {
+
+        $rules = [
+            'email' => 'required|unique:users|email',
+            'password' => 'required',
+            'name' => 'required'
+        ];
+
+        $resource = new UserController();
+        return $resource->store($request, $rules);
+    
+    });
+    
+    $router->put('users/{id}', function(Request $request) {
+
+        $rules = [
+            'email' => 'unique:users'
+        ];
+       
+        $resource = new UserController();
+        $id = $request->id;
+        return $resource->update($id, $request, $rules);
+    });
 });
