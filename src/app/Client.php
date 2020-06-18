@@ -28,7 +28,7 @@ class Client extends Authenticatable
     ];
 
     /**
-     * Related App\ProductComment::class
+     * Related App\Company::class
      *
      * @return BelongsTo
      */
