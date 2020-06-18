@@ -26,4 +26,15 @@ class Client extends Authenticatable
         'neighborhood', 
         'complement'
     ];
+
+    /**
+     * Related App\ProductComment::class
+     *
+     * @return BelongsTo
+     */
+    public function compnay()
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
+
 }
