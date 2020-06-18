@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CommonController extends Controller
+abstract class BaseController
 {
     protected $class;
     protected $hash;

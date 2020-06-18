@@ -6,7 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends CommonController
+class UserController extends BaseController
 {
     public function __construct()
     {

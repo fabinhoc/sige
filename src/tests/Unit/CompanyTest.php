@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\User;
 use App\Company;
 use Tests\TestCase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CompanyTest extends TestCase
@@ -41,30 +43,49 @@ class CompanyTest extends TestCase
     public function testCreate()
     {
         $auth = $this->login();
-        
-        $company = factory(Company::class)->make()->toArray();
 
-        $response = $this->post('api/companies', $company, ['Authorization' => 'Bearer ' . $auth['access_token']]);
-        $response->assertStatus(201);
+        $company = factory(Company::class)->make()->toArray();
+        
+        Storage::fake('public');
+        $file = UploadedFile::fake()->image('logo.jpg');
+
+        $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $auth['access_token']];
+        $response = $this->call(
+            'POST',
+            '/api/companies', 
+            $company, 
+            [], 
+            ['logo' => $file], $server)
+        ->json();
+
         $this->assertDatabaseHas('companies', [
             'email' => $company['email'],
         ]);
 
-        return (array) json_decode($response->content());
+        Storage::delete($response['logo']);
+
+        return $response;
     }
 
     public function testUpdate()
     {
         $auth = $this->login();
 
+        Storage::fake('public');
+        $file = UploadedFile::fake()->image('logo.jpg');
+        
         $company = $this->testCreate();
+        
+        $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $auth['access_token']];
+        $response = $this->call(
+            'PUT',
+            '/api/companies/' . $company['id'], 
+            ['name' => 'Testing name'], 
+            [], 
+            ['logo' => $file], $server)
+        ->json();
 
-        $response = $this->put('api/companies/' . $company['id'], ['name' => 'Fabio Cruz'], ['Authorization' => 'Bearer ' . $auth['access_token']]);
-        $this->assertDatabaseHas('companies', [
-            'email' => $company['email'],
-        ]);
-        $response->assertStatus(200);
-        $response->assertJsonStructure($this->json);
+        Storage::delete($response['logo']);
     }
 
     public function testList()
@@ -94,5 +115,17 @@ class CompanyTest extends TestCase
         $company = $this->testCreate();
 
         $this->delete('api/companies/' . $company['id'], [], ['Authorization' => $auth['access_token']]);
+    }
+
+    public function testImage()
+    {
+        $auth = $this->login();
+
+        $company = $this->testCreate();
+
+        $file = str_replace('public/','',$company['logo']);
+        $this->get('api/companies/image' . $file, ['Authorization' => $auth['access_token']]);
+        
+        Storage::disk('public')->exists($file);
     }
 }

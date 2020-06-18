@@ -3,9 +3,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Company;
-use Illuminate\Support\Str;
 use Faker\Generator as Faker;
-use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +20,6 @@ $factory->define(Company::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'logo' => $faker->name(),
-        'website' => $faker->text(),
-        'remember_token' => Str::random(10),
+        'website' => $faker->email()
     ];
 });
