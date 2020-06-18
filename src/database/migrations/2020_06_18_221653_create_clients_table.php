@@ -24,6 +24,8 @@ class CreateClientsTable extends Migration
             $table->string('address');
             $table->integer('houseNumber');
             $table->string('neighborhood');
+            $table->string('state');
+            $table->string('city');
             $table->string('complement');
             $table->timestamps();
 

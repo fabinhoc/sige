@@ -23,7 +23,9 @@ class Client extends Authenticatable
         'zipcode', 
         'address', 
         'houseNumber',
-        'neighborhood', 
+        'neighborhood',
+        'state',
+        'city',
         'complement'
     ];
 
