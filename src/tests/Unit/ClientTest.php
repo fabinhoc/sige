@@ -5,8 +5,6 @@ namespace Tests\Unit;
 use App\User;
 use App\Client;
 use Tests\TestCase;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ClientTest extends TestCase
@@ -23,7 +21,9 @@ class ClientTest extends TestCase
         'zipcode', 
         'address', 
         'houseNumber',
-        'neighborhood', 
+        'neighborhood',
+        'state',
+        'city', 
         'complement',
         'created_at', 
         'updated_at'
@@ -50,55 +50,36 @@ class ClientTest extends TestCase
     {
         $auth = $this->login();
 
-        $company = factory(Company::class)->make()->toArray();
+        $client = factory(Client::class)->make()->toArray();
         
-        Storage::fake('public');
-        $file = UploadedFile::fake()->image('logo.jpg');
-
-        $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $auth['access_token']];
-        $response = $this->call(
-            'POST',
-            '/api/companies', 
-            $company, 
-            [], 
-            ['logo' => $file], $server)
-        ->json();
-
-        $this->assertDatabaseHas('companies', [
-            'email' => $company['email'],
+        $response = $this->post('api/clients', $client, ['Authorization' => 'Bearer ' . $auth['access_token']]);
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('clients', [
+            'email' => $client['email'],
         ]);
 
-        Storage::delete($response['logo']);
-
-        return $response;
+        return (array) json_decode($response->content());
     }
 
     public function testUpdate()
     {
         $auth = $this->login();
 
-        Storage::fake('public');
-        $file = UploadedFile::fake()->image('logo.jpg');
-        
-        $company = $this->testCreate();
-        
-        $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $auth['access_token']];
-        $response = $this->call(
-            'PUT',
-            '/api/companies/' . $company['id'], 
-            ['name' => 'Testing name'], 
-            [], 
-            ['logo' => $file], $server)
-        ->json();
+        $client = $this->testCreate();
 
-        Storage::delete($response['logo']);
+        $response = $this->put('api/clients/' . $client['id'], ['name' => 'Fabio Cruz'], ['Authorization' => 'Bearer ' . $auth['access_token']]);
+        $this->assertDatabaseHas('clients', [
+            'email' => $client['email'],
+        ]);
+        $response->assertStatus(200);
+        $response->assertJsonStructure($this->json);
     }
 
     public function testList()
     {
         $auth = $this->login();
 
-        $response = $this->get('api/companies', ['Authorization' => 'Bearer ' . $auth['access_token']]);
+        $response = $this->get('api/clients', ['Authorization' => 'Bearer ' . $auth['access_token']]);
         $response->assertStatus(200);
         $response->assertJsonStructure(['*' => $this->json]);
     }
@@ -107,9 +88,9 @@ class ClientTest extends TestCase
     {
         $auth = $this->login();
         
-        $company = $this->testCreate();
+        $client = $this->testCreate();
 
-        $response = $this->get('api/companies/' . $company['id'], ['Authorization' => 'Bearer ' . $auth['access_token']]);
+        $response = $this->get('api/clients/' . $client['id'], ['Authorization' => 'Bearer ' . $auth['access_token']]);
         $response->assertStatus(200);
         $response->assertJsonStructure($this->json);
     }
@@ -118,20 +99,8 @@ class ClientTest extends TestCase
     {
         $auth = $this->login();
 
-        $company = $this->testCreate();
+        $client = $this->testCreate();
 
-        $this->delete('api/companies/' . $company['id'], [], ['Authorization' => $auth['access_token']]);
-    }
-
-    public function testImage()
-    {
-        $auth = $this->login();
-
-        $company = $this->testCreate();
-
-        $file = str_replace('public/','',$company['logo']);
-        $this->get('api/companies/image' . $file, ['Authorization' => $auth['access_token']]);
-        
-        Storage::disk('public')->exists($file);
+        $this->delete('api/clients/' . $client['id'], [], ['Authorization' => $auth['access_token']]);
     }
 }

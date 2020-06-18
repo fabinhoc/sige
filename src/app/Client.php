@@ -34,7 +34,7 @@ class Client extends Authenticatable
      *
      * @return BelongsTo
      */
-    public function compnay()
+    public function company()
     {
         return $this->belongsTo(Company::class, 'company_id', 'id');
     }

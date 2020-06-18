@@ -20,6 +20,7 @@ $factory->define(Company::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'website' => $faker->email()
+        'website' => $faker->email(),
+        'logo' => $faker->sentence()
     ];
 });

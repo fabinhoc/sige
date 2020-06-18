@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Company;
-use Illuminate\Http\Request;
+use App\Client;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
-class CompanyController extends BaseController
+class ClientController extends BaseController
 {
     public function __construct()
     {
-        $this->class = Company::class;
+        $this->class = Client::class;
         $this->hash = Hash::class;
         $this->storage = Storage::class;
     }
 
     public function index()
     {
-        return $this->class::with('company')->all();
+        return $this->class::with('company')->get();
     }    
 
     public function show($id)

@@ -22,14 +22,14 @@ $factory->define(Client::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'personalNumber' => $faker->randomNumber(11),
-        'phone' => $faker->randomNumber(11),
+        'personalNumber' => $faker->randomNumber(),
+        'phone' => $faker->randomNumber(),
         'company_id' => function () {
             return factory(Company::class)->create()->id;
         },
-        'zipcode' => $faker->randomNumber(11),
+        'zipcode' => $faker->randomNumber(),
         'address' => $faker->streetAddress(),
-        'houseNumber' => $faker->randomNumber(5),
+        'houseNumber' => $faker->randomNumber(),
         'neighborhood' => $faker->city(),
         'state' => $faker->state(),
         'city' => $faker->city(),
