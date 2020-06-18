@@ -69,4 +69,15 @@ class CommonController extends Controller
 
         return response()->json($resource, 200);
     }
+
+    public function destroy($id)
+    {
+        $resource = $this->class::findOrFail($id);
+        if ($resource) {
+            $resource->delete($id);
+            return response()->json($resource, 200);
+        }
+
+        return response()->json('Resource not responding correctly', 400);
+    }
 }

@@ -34,4 +34,6 @@ $router->group(['middleware' => 'jwt-auth'], function () use ($router) {
         return $resource->update($id, $request, $rules);
     });
 
+    $router->delete('companies/{id}', 'CompanyController@destroy');
+
 });
