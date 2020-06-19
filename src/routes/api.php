@@ -1,19 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+/** @var \Laravel\Lumen\Routing\Router $router */
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+require __DIR__ . '/partials/companyRoute.php';
+require __DIR__ . '/partials/authRoute.php';
+require __DIR__ . '/partials/userRoute.php';
+require __DIR__ . '/partials/clientRoute.php';
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});

@@ -2,10 +2,9 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\User;
-use Illuminate\Support\Str;
+use App\Client;
+use App\Company;
 use Faker\Generator as Faker;
-use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,12 +17,22 @@ use Illuminate\Support\Facades\Hash;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(Client::class, function (Faker $faker) {
+
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => Hash::make('admin'), // password
-        'remember_token' => Str::random(10),
+        'personalNumber' => $faker->randomNumber(),
+        'phone' => $faker->randomNumber(),
+        'company_id' => function () {
+            return factory(Company::class)->create()->id;
+        },
+        'zipcode' => $faker->randomNumber(),
+        'address' => $faker->streetAddress(),
+        'houseNumber' => $faker->randomNumber(),
+        'neighborhood' => $faker->city(),
+        'state' => $faker->state(),
+        'city' => $faker->city(),
+        'complement' => $faker->sentence()
     ];
 });
