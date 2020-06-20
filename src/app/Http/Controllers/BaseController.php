@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\Support\Jsonable;
 
 abstract class BaseController
 {
@@ -17,7 +19,7 @@ abstract class BaseController
 
     public function index()
     {
-        return $this->class::all();
+        return $this->class::paginate(10);
     }
 
     public function store(Request $request, $rules = [])
@@ -26,7 +28,7 @@ abstract class BaseController
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors());
+                return response()->json(["errors" => $validator->errors()]);
             }
         }
 
@@ -52,7 +54,7 @@ abstract class BaseController
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors());
+                return response()->json(["errors" => $validator->errors()]);
             }
         }
 

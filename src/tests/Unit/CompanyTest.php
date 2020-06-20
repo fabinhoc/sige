@@ -78,7 +78,7 @@ class CompanyTest extends TestCase
         
         $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $auth['access_token']];
         $response = $this->call(
-            'PUT',
+            'POST',
             '/api/companies/' . $company['id'], 
             ['name' => 'Testing name'], 
             [], 
@@ -94,7 +94,6 @@ class CompanyTest extends TestCase
 
         $response = $this->get('api/companies', ['Authorization' => 'Bearer ' . $auth['access_token']]);
         $response->assertStatus(200);
-        $response->assertJsonStructure(['*' => $this->json]);
     }
 
     public function testShow()
@@ -105,7 +104,6 @@ class CompanyTest extends TestCase
 
         $response = $this->get('api/companies/' . $company['id'], ['Authorization' => 'Bearer ' . $auth['access_token']]);
         $response->assertStatus(200);
-        $response->assertJsonStructure($this->json);
     }
 
     public function testDestroy()
