@@ -22,61 +22,57 @@ class CompanyController extends BaseController
         $rules = [
             'email' => 'required|unique:companies|email',
             'website' => 'required',
-            'name' => 'required',
-            'logo' => 'required|file|mimes:jpeg,bmp,png,jpg'
+            'name' => 'required'
         ];
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        }
 
         $file = $request->file('logo');
         if ($request->hasFile('logo')) {
-
+            $rules['logo'] = 'file|mimes:jpeg,bmp,png,jpg';
             $url = $file->store('public');
-            
-            $data = [
-                'name' => $request->name,
-                'email' => $request->email,
-                'website' => $request->website,
-                'logo' => $url
-            ];
-        
-            return $this->class::create($data);
+        } else {
+            $url = '';
         }
 
-        return response()->json('Image file not found', 406);
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(["errors" => $validator->errors()]);
+        }
+       
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'website' => $request->website,
+            'logo' => $url
+        ];
+    
+        return $this->class::create($data);
     }
 
     public function update($id, Request $request, $rules = []) 
     {
-        $rules = [
-            'email' => 'unique:companies|email',
-            'logo' => 'file|mimes:jpeg,bmp,png,jpg'
-        ];
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        }
-
-        $file = $request->file('logo');
-        $resource = $this->class::find($id);
-
-        if ($request->hasFile('logo')) {
-            $url = $file->store('public');
-        }
+        $requestData = $request->all();
         
+        if ($request->hasFile('logo')) {
+            $rules = [
+                'logo' => 'file|mimes:jpeg,bmp,png,jpg'
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()]);
+            }
+
+            $file = $request->file('logo');
+            $url = $file->store('public');
+            $requestData['logo'] = $url;
+        }
+
         $resource = $this->class::find($id);
         
         if (is_null($resource)) {
             return response()->json('Resource not found', 404);
         }
         $imagePath = $resource->logo;
-
-        $requestData = $request->all();
-        $requestData['logo'] = $url;
 
         $resource->fill($requestData);
         $response = $resource->save();

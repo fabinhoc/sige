@@ -23,15 +23,7 @@ $router->group(['middleware' => 'jwt-auth'], function () use ($router) {
     
     });
     
-    $router->put('users/{id}', function(Request $request) {
-
-        $rules = [
-            'email' => 'unique:users'
-        ];
-        
-        $resource = new UserController();
-        $id = $request->id;
-        return $resource->update($id, $request, $rules);
-    });
+    $router->put('users/{id}', 'UserController@update');
+    $router->delete('users/{id}', 'UserController@destroy');
     
 });

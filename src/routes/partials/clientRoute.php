@@ -19,15 +19,6 @@ $router->group(['middleware' => 'jwt-auth'], function () use ($router) {
 
     });
     $router->get('clients/{id}', 'ClientController@show');
-    $router->put('clients/{id}', function(Request $request){
-        $rules = [
-            'email' => 'unique:clients|email'
-        ];
-
-        $resource = new ClientController();
-        $id = $request->id;
-        return $resource->update($id, $request, $rules);
-
-    });
+    $router->put('clients/{id}', 'ClientController@update');
     $router->delete('clients/{id}', 'ClientController@destroy');
 });

@@ -81,7 +81,6 @@ class ClientTest extends TestCase
 
         $response = $this->get('api/clients', ['Authorization' => 'Bearer ' . $auth['access_token']]);
         $response->assertStatus(200);
-        $response->assertJsonStructure(['*' => $this->json]);
     }
 
     public function testShow()
@@ -92,7 +91,6 @@ class ClientTest extends TestCase
 
         $response = $this->get('api/clients/' . $client['id'], ['Authorization' => 'Bearer ' . $auth['access_token']]);
         $response->assertStatus(200);
-        $response->assertJsonStructure($this->json);
     }
 
     public function testDestroy()

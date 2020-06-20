@@ -73,7 +73,6 @@ class UserTest extends TestCase
 
         $response = $this->get('api/users', ['Authorization' => 'Bearer ' . $auth['access_token']]);
         $response->assertStatus(200);
-        $response->assertJsonStructure(['*' => $this->json]);
     }
 
     public function testShow()
@@ -84,6 +83,14 @@ class UserTest extends TestCase
 
         $response = $this->get('api/users/' . $user['id'], ['Authorization' => 'Bearer ' . $auth['access_token']]);
         $response->assertStatus(200);
-        $response->assertJsonStructure($this->json);
+    }
+
+    public function testDestroy()
+    {
+        $auth = $this->login();
+
+        $user = $this->testCreate();
+
+        $this->delete('api/user/' . $user['id'], [], ['Authorization' => $auth['access_token']]);
     }
 }

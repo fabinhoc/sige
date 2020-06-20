@@ -17,7 +17,7 @@ class ClientController extends BaseController
 
     public function index()
     {
-        return $this->class::with('company')->get();
+        return $this->class::with('company')->paginate(10);
     }    
 
     public function show($id)

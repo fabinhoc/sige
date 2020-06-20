@@ -17,16 +17,16 @@ class CreateClientsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
-            $table->integer('personalNumber');
-            $table->integer('phone');
+            $table->integer('personalNumber')->nullable();
+            $table->integer('phone')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->integer('zipcode');
-            $table->string('address');
-            $table->integer('houseNumber');
-            $table->string('neighborhood');
-            $table->string('state');
-            $table->string('city');
-            $table->string('complement');
+            $table->integer('zipcode')->nullable();
+            $table->string('address')->nullable();
+            $table->integer('houseNumber')->nullable();
+            $table->string('neighborhood')->nullable();
+            $table->string('state')->nullable();
+            $table->string('city')->nullable();
+            $table->string('complement')->nullable();
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
